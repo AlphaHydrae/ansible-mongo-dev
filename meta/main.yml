@@ -12,3 +12,5 @@ galaxy_info:
   galaxy_tags:
     - mongo
     - mongodb
+
+dependencies: []
