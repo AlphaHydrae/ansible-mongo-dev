@@ -6,11 +6,22 @@
   become_user: "{{ mongo_dev_homebrew_user }}"
   when: ansible_pkg_mgr == 'homebrew'
 
-- name: Start MongoDB (Homebrew)
-  shell: su - {{ mongo_dev_homebrew_user }} -c "{{ mongo_dev_homebrew_bin }} services start mongodb"
-  register: result
-  changed_when: result.rc != 0
+- name: Check if MongoDB is started (Homebrew)
+  shell: "{{ mongo_dev_homebrew_bin | quote }} services list | grep '^mongodb ' | grep started"
+  become: true
+  become_user: "{{ mongo_dev_homebrew_user }}"
+  register: mongo_dev_start_check_result
+  changed_when: false
+  failed_when: false
   when: ansible_pkg_mgr == 'homebrew'
+
+- name: Start MongoDB (Homebrew)
+  command: "{{ mongo_dev_homebrew_bin | quote }} services start mongodb"
+  become: true
+  become_user: "{{ mongo_dev_homebrew_user }}"
+  register: mongo_dev_start_result
+  changed_when: mongo_dev_start_result.rc != 0
+  when: ansible_pkg_mgr == 'homebrew' and mongo_dev_start_check_result.rc != 0
 
 # Unsupported package managers
 - fail: msg="{{ ansible_pkg_mgr }} is not a supported package manager (Homebrew is supported)"
