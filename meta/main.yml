@@ -13,4 +13,8 @@ galaxy_info:
     - mongo
     - mongodb
 
-dependencies: []
+dependencies:
+  - role: AlphaHydrae.homebrew-service
+    homebrew_service: mongodb-community
+    homebrew_service_taps:
+      - mongodb/brew
