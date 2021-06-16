@@ -18,3 +18,8 @@ dependencies:
     homebrew_service: mongodb-community
     homebrew_service_taps:
       - mongodb/brew
+    homebrew_service_start_check_command: >-
+      {{ homebrew_service_dir }}/bin/mongo
+      --eval {{ 'printjson(1 + 2)' | quote }}
+      --quiet
+    homebrew_service_start_check_expect: "3"
